@@ -1,4 +1,4 @@
-#Sorting Algorithm Visualizer#
+#Sorting Algorithm Visualizer
 
 This is an interactive graphical application that visualizes the process of various common sorting algorithms. Users can select different sorting algorithms (such as Bubble Sort, Merge Sort, Quick Sort, etc.) and watch the sorting process step-by-step. The app allows users to control the sorting speed and reset the array for new visualizations.
 
