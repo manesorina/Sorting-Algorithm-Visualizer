@@ -1,18 +1,19 @@
-#Sorting Algorithm Visualizer
+Sorting Algorithm Visualizer
+Overview
+The Sorting Algorithm Visualizer is an interactive graphical application designed to visualize the process of various common sorting algorithms. Users can select different algorithms and observe the sorting process step-by-step, enhancing their understanding of how these algorithms work.
 
-This is an interactive graphical application that visualizes the process of various common sorting algorithms. Users can select different sorting algorithms (such as Bubble Sort, Merge Sort, Quick Sort, etc.) and watch the sorting process step-by-step. The app allows users to control the sorting speed and reset the array for new visualizations.
+Features
+Multiple Sorting Algorithms: Visualize various sorting algorithms, including:
 
-Features:
+Bubble Sort
+Merge Sort
+Quick Sort
+And more!
 
-Visualize multiple sorting algorithms (Bubble Sort, Merge Sort, Quick Sort, etc.)
-Step-by-step sorting animations with adjustable speed
-Real-time display of array elements as bars
-Randomize the array or reset to start over
-Clear and simple user interface with interactive controls
-Technologies Used:
+Technologies Used
+-Rust: The programming language used to build the application.
+-eframe: A lightweight GUI framework built on egui for creating the application interface.
+-egui: An immediate-mode GUI library used for rendering and handling the user interface.
+-rand: A library used to generate random arrays for sorting.
+-Multithreading: Sorting algorithms run in the background using std::thread to maintain a responsive user interface.
 
-Rust: The programming language used for building the app.
-eframe: A lightweight GUI framework built on egui for building the application interface.
-egui: An immediate-mode GUI library used for drawing and handling the UI.
-rand: Used to generate random arrays for sorting.
-Multithreading: The sorting algorithms run in the background using std::thread to maintain a responsive UI.
