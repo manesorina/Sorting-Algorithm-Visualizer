@@ -1,5 +1,6 @@
 Sorting Algorithm Visualizer
-Overview
+
+
 The Sorting Algorithm Visualizer is an interactive graphical application designed to visualize the process of various common sorting algorithms. Users can select different algorithms and observe the sorting process step-by-step, enhancing their understanding of how these algorithms work.
 
 Features
