@@ -4,7 +4,7 @@ use crate::sorting::SortVisualizer;
 
 pub struct SortingApp {
     visualizer: SortVisualizer,
-    original_array: Vec<i32>, 
+    original_array: Vec<usize>, 
 }
 
 impl Default for SortingApp {
@@ -30,7 +30,6 @@ impl eframe::App for SortingApp {
                 let sorting_disabled = self.visualizer.is_sorting;
                 
                 if ui.add_enabled(!sorting_disabled, egui::Button::new("Bubble Sort")).clicked() {
-                    // Save original array before sorting
                     self.original_array = self.visualizer.numbers.clone();
                     self.visualizer.bubble_sort(ctx);
                 }
@@ -45,6 +44,11 @@ impl eframe::App for SortingApp {
                 if ui.add_enabled(!sorting_disabled, egui::Button::new("Quick Sort")).clicked() {
                     self.original_array = self.visualizer.numbers.clone();
                     self.visualizer.quick_sort(ctx);
+                }
+
+                if ui.add_enabled(!sorting_disabled, egui::Button::new("Merge Sort")).clicked(){
+                    self.original_array=self.visualizer.numbers.clone();
+                    self.visualizer.merge_sort(ctx);
                 }
                 
                 if ui.add_enabled(self.visualizer.is_sorting, egui::Button::new("Stop")).clicked() {

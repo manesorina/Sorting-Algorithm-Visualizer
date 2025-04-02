@@ -3,9 +3,9 @@ use std::{thread, time::Duration};
 
 
 pub struct SortVisualizer {
-    pub numbers: Vec<i32>,
+    pub numbers: Vec<usize>,
     pub is_sorting: bool,
-    pub rx: Option<std::sync::mpsc::Receiver<Vec<i32>>>,
+    pub rx: Option<std::sync::mpsc::Receiver<Vec<usize>>>,
     pub show_scanning: bool,
 }
 
@@ -150,10 +150,10 @@ impl SortVisualizer {
         
         thread::spawn(move || {
             fn quick_sort_recursive(
-                numbers: &mut Vec<i32>, 
+                numbers: &mut Vec<usize>, 
                 low: usize, 
                 high: usize, 
-                tx: &std::sync::mpsc::Sender<Vec<i32>>, 
+                tx: &std::sync::mpsc::Sender<Vec<usize>>, 
                 ctx: &egui::Context,
                 show_scanning: bool
             ) {
@@ -170,10 +170,10 @@ impl SortVisualizer {
             }
             
             fn partition(
-                numbers: &mut Vec<i32>, 
+                numbers: &mut Vec<usize>, 
                 low: usize, 
                 high: usize, 
-                tx: &std::sync::mpsc::Sender<Vec<i32>>, 
+                tx: &std::sync::mpsc::Sender<Vec<usize>>, 
                 ctx: &egui::Context,
                 show_scanning: bool
             ) -> usize {
@@ -216,6 +216,130 @@ impl SortVisualizer {
         
         self.rx = Some(rx);
     }
+
+
+    pub fn merge_sort(&mut self, ctx: &egui::Context) {
+        self.is_sorting = true;
+        let len = self.numbers.len();
+        
+        if len <= 1 {
+            return;
+        }
+        
+        let (tx, rx) = std::sync::mpsc::channel();
+        
+        let mut numbers_clone = self.numbers.clone();
+        let ctx_clone = ctx.clone();
+        let show_scanning = self.show_scanning;
+    
+        thread::spawn(move || {
+            fn merge_sort_recursive(
+                numbers: &mut Vec<usize>,
+                low: usize,
+                high: usize,
+                tx: &std::sync::mpsc::Sender<Vec<usize>>,
+                ctx: &egui::Context,
+                show_scanning: bool
+            ) {
+                if low >= high {
+                    return;
+                }
+                
+                let mid = low + (high - low) / 2;
+                
+                merge_sort_recursive(numbers, low, mid, tx, ctx, show_scanning);
+                merge_sort_recursive(numbers, mid + 1, high, tx, ctx, show_scanning);
+                
+                merge(numbers, low, mid, high, tx, ctx, show_scanning);
+            }
+            
+            fn merge(
+                numbers: &mut Vec<usize>,
+                low: usize,
+                mid: usize,
+                high: usize,
+                tx: &std::sync::mpsc::Sender<Vec<usize>>,
+                ctx: &egui::Context,
+                show_scanning: bool
+            ) {
+                let left_size = mid - low + 1;
+                let right_size = high - mid;
+                
+                
+                let mut left = Vec::with_capacity(left_size);
+                let mut right = Vec::with_capacity(right_size);
+                
+                
+                for i in 0..left_size {
+                    left.push(numbers[low + i]);
+                }
+                
+                for i in 0..right_size {
+                    right.push(numbers[mid + 1 + i]);
+                }
+                
+                let mut i = 0; 
+                let mut j = 0; 
+                let mut k = low; 
+                
+                while i < left_size && j < right_size {
+                    if show_scanning {
+                        tx.send(numbers.clone()).unwrap();
+                        thread::sleep(Duration::from_millis(30));
+                        ctx.request_repaint();
+                    }
+                    
+                    if left[i] <= right[j] {
+                        numbers[k] = left[i];
+                        i += 1;
+                    } else {
+                        numbers[k] = right[j];
+                        j += 1;
+                    }
+                    
+                    tx.send(numbers.clone()).unwrap();
+                    thread::sleep(Duration::from_millis(30));
+                    ctx.request_repaint();
+                    
+                    k += 1;
+                }
+                
+                while i < left_size {
+                    numbers[k] = left[i];
+                    
+                    tx.send(numbers.clone()).unwrap();
+                    thread::sleep(Duration::from_millis(30));
+                    ctx.request_repaint();
+                    
+                    i += 1;
+                    k += 1;
+                }
+                
+                while j < right_size {
+                    numbers[k] = right[j];
+                    
+                    tx.send(numbers.clone()).unwrap();
+                    thread::sleep(Duration::from_millis(30));
+                    ctx.request_repaint();
+                    
+                    j += 1;
+                    k += 1;
+                }
+            }
+            
+            if len > 0 {
+                merge_sort_recursive(&mut numbers_clone, 0, len - 1, &tx, &ctx_clone, show_scanning);
+            }
+            
+            
+            tx.send(numbers_clone).unwrap();
+            ctx_clone.request_repaint();
+        });
+        
+        self.rx = Some(rx);
+    }
+
+    
 
 
 
